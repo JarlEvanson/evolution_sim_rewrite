@@ -2,21 +2,23 @@
 
 extern crate rand;
 
-use grid::OccupantType;
-use rand::thread_rng;
-
-use crate::{grid::Grid, grid_id::GridID};
+extern crate custom_dst;
 
 mod grid_id;
 
 mod grid;
+use grid::{Grid, OccupantType};
+
+mod gene;
+
+mod compass;
+
+mod neural_net;
+
+mod population;
 
 fn main() {
     println!("Size of {}", std::mem::size_of::<OccupantType>());
 
     let x = unsafe { Grid::new_unchecked(11, 11) };
-
-    x.visit_neighborhood((10, 10), 1.0, |(x, y)| println!("({}, {})", x, y));
-
-    //println!("{:?}", x.find_empty_loc(&mut thread_rng()));
 }

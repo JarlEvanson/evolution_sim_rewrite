@@ -1,12 +1,12 @@
 use std::num::NonZeroU32;
 
-use rand::{distributions::Uniform, rngs::ThreadRng, Rng};
+use rand::{rngs::ThreadRng, Rng};
 
 use crate::grid_id::GridID;
 
 pub struct Grid {
-    pub width: NonZeroU32,
-    pub height: NonZeroU32,
+    pub width: GridLength,
+    pub height: GridLength,
     grid: Box<[OccupantType]>,
 }
 
@@ -20,13 +20,13 @@ pub enum OccupantType {
 type GridLength = NonZeroU32;
 
 impl Grid {
-    pub fn new(width: u32, height: u32) -> Grid {
+    pub fn new(width: u32, height: u32) -> Self {
         assert!(width != 0 && height != 0);
         let cells = width.checked_mul(height);
         assert!(cells.is_some());
         Grid {
-            width: unsafe { NonZeroU32::new_unchecked(width) },
-            height: unsafe { NonZeroU32::new_unchecked(height) },
+            width: unsafe { GridLength::new_unchecked(width) },
+            height: unsafe { GridLength::new_unchecked(height) },
             grid: vec![OccupantType::None; unsafe { cells.unwrap_unchecked() as usize }]
                 .into_boxed_slice(),
         }
@@ -34,10 +34,10 @@ impl Grid {
 
     /// # Safety
     /// If width * height overflow, then it results in UB
-    pub unsafe fn new_unchecked(width: u32, height: u32) -> Grid {
+    pub unsafe fn new_unchecked(width: u32, height: u32) -> Self {
         Grid {
-            width: unsafe { NonZeroU32::new_unchecked(width) },
-            height: unsafe { NonZeroU32::new_unchecked(height) },
+            width: unsafe { GridLength::new_unchecked(width) },
+            height: unsafe { GridLength::new_unchecked(height) },
             grid: vec![OccupantType::None; (width * height) as usize].into_boxed_slice(),
         }
     }
